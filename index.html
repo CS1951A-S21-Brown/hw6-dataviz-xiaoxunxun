@@ -4,25 +4,106 @@
         <meta charset="utf-8">
         <title>Assignment 6 &laquo; Data Visualization Dashboard&raquo;</title>
         <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/css/bootstrap-slider.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="main.css"/>
         <!--Feel free to add more CSS files as needed-->
         <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     </head>
 <body>
     <div class="header">
         <h3>Assignment 6 &laquo; Data Visualization Dashboard &raquo;</h3>
+        <h5>Tracking the most popular video games throughout the decade</h5>
     </div>
     <!--  We included a basic HTML structure for the 3 graphs here. Feel free to change this if you'd like  -->
     <div class="row">
         <div class="col-lg-6">
+
+            
             <div id="graph1"></div>
-            <div id="graph2"></div><br/>
+            <div class="controls">
+                <input type="text" id="attrInput" class="form-control" placeholder="Year" aria-label="Year"
+            aria-describedby="basic-addon2">
+        <div class="input-group-append">
+             <button style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
+                 class="btn btn-primary" type="button" onclick="setAttr()">
+             Submit
+         </button>
+        </div>
+     </div>
+
+            <div id="graph3">
+                
+            </div>
+            <p style="font-size: 11px;">*Use the map to show geographic impact. Hover over each region to see the details!</p>
+            <br/>
         </div>
         <div class="col-lg-6">
-            <div id="graph3"></div>
+            <div id="graph2"></div>
+            <button style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
+            class="btn btn-primary" type="button" onclick="calPercent()">
+                               Calculate Percentage
+    </button><br/>
+    <br/>
+            <!-- Add buttons -->
+            <button onclick="graph2_update(`Action`)">Action</button>
+            <button onclick="graph2_update(`Adventure`)">Adventure</button>
+            <button onclick="graph2_update(`Fighting`)">Fighting</button>
+            <button onclick="graph2_update(`Misc`)">Misc</button>
+            <button onclick="graph2_update(`Platform`)">Platform</button>
+            <button onclick="graph2_update(`Puzzle`)">Puzzle</button>
+            <br/>
+            <button onclick="graph2_update(`Racing`)">Racing</button>
+            <button onclick="graph2_update(`Role-Playing`)">Role-Playing</button>
+            <button onclick="graph2_update(`Shooter`)">Shooter</button>
+            <button onclick="graph2_update(`Simulation`)">Simulation</button>
+            <button onclick="graph2_update(`Sports`)">Sports</button>
+            <button onclick="graph2_update(`Strategy`)">Strategy</button>
+            <br/>
+            <p style="font-size: 11px;">*Please click the Calculate Percentage button to dynamically calculate the percentage of Top 5 publisher in each genre. <br/>
+                This statistical calculation is important to select the best publisher for a given game genre. </p>
+    
         </div>
+
     </div>
-    <!--Feel free to add more JavaScript files as needed-->
+
+    <!--Written Questions 1-->
+   <p style="font-size: 12px;"> *Q1: The static left-top bar figure tells the top 10 video games of all time. 
+    The dynamic feature of a user-input year tells the top 10 video games of the specific year.  <br/>
+    The static left-bottom map clealy tells us the most popular genre in different regions by the tooltip feature in a worldmap.  <br/>
+    The right bar chart with statistical percentage calculation feature clealy addresses the need to select a publisher for a given genre. We just need to select the publisher with the largest percentage of games in that genre. 
+    
+    <br/>
+
+    <p style="font-size: 12px;"> *Q2: (1) The D3 conveniently combines the data analysis and pretty data visualization together in one framework.<br/>
+        (2) There are so many open-source template or examples online to make pretty visualization figures for our data analysis.<br/>
+        (3) D3 is written in JavaScript using many functions so we can reuse the code and these functions to make data visualization for similar tasks to improve efficiency.
+    <br/>
+
+    <p style="font-size: 12px;"> *Q3: (1) For simple and small dataset like 2 columns and less than 10 rows, D3 will not be the best tool, instead Excel or Pandas would be much faster.<br/>
+        (2) Since D3 is open-source so if we are working on private dataset with deliberate concerns, we should not use D3.<br/>
+        (3) Since D3 doesn't always support older browsers, we should not use D3 for data visualization if we are working on some projects that will need support on older browsers.    
+        <br/>
+
+    <p style="font-size: 12px;"> *Q4: As the reading “Why Accessibility Is at the Heart of Data Visualization” said, special attentions
+        should be paid to make equivalent experience for all our readers. My dashboard contains 3 figures all with color fillings. 
+        They will be very helpful for healthy user to distinguish the category difference.
+        However, these colors in my dashboard may be hard to distinguish for some color-blind people even I used color with reasonable contrast. Also, my "Calculate Percentage" button may not be accessible to people 
+        who needs assistive device since reading the HTML tag to find the button is not convienient for these people. However, 
+        my dashboard conveys the necessary informations that is not dependent on colors. For example, 
+        the length of each bar in the bar chart can tells us the top sellers. Also the size of each portion in 
+        the pie chart can tell us the top publisher in each game genre. To improve current dashboard for accessibility,
+        I can build the percentage calculation shown on the pie chart directly rather than using the button to help people who needs assistive device to have better access to the results. 
+    
+    <p style="font-size: 12px;"> *Q5: One factor is that myself is not strong at distinguishing colors so I had a hard time to choose the good color scheme so I kept the same scheme as in the lab. Also for the map, I am not sure if every reader is good at geography to distinguish the four location. 
+        But the happiness of learning how to make a map and to get 10 extra credit dismissed my concern.
+    
+        <!--Feel free to add more JavaScript files as needed-->
     <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript" src="graph1_barplot.js"></script>
+    <script type="text/javascript" src="graph2_pie.js"></script>
+    <script type="text/javascript" src="graph3_map.js"></script>
 </body>
 </html>
