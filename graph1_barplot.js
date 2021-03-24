@@ -20,7 +20,7 @@ let countRef = svg_barplot.append("g");
 
 // Set up reference to y axis label to update text in setData
 
-let y_axis_label = svg_barplot.append("g");
+let y_axis_label = svg_barplot.append("g").attr("transform", `translate(40, 0)`);
 
 // Add x-axis label
 svg_barplot.append("text")
@@ -31,7 +31,7 @@ svg_barplot.append("text")
 
 // Add y-axis label
 let y_axis_text = svg_barplot.append("text")
-    .attr("transform", `translate(-120, ${(graph_1_height - margin.top - margin.bottom)/2})`)
+    .attr("transform", `translate(-0, ${(graph_1_height - margin.top - margin.bottom)/2-90})`)
     .style("text-anchor", "middle")
     .style("font-size", 12)
     .text("Games");
@@ -56,7 +56,7 @@ let color = d3.scaleOrdinal()
     y_bar.domain(process_data.map(function(d) { return d.Name }));
     color.domain(process_data.map(function(d) { return d.Name }));
     // Render y-axis label
-    y_axis_label.call(d3.axisLeft(y_bar).tickSize(0).tickPadding(2)).attr("transform", `translate(40, 0)`);
+    y_axis_label.call(d3.axisLeft(y_bar).tickSize(0).tickPadding(2));
 
     let bars = svg_barplot.selectAll("rect").data(process_data);
 
@@ -102,17 +102,30 @@ let color = d3.scaleOrdinal()
 
     });
 
-    process_data = cleanData(filteredData, function(a, b) {return parseFloat(b.Global_Sales)-parseFloat(a.Global_Sales)}, NUM_EXAMPLES);
 
-    //console.log( process_data)
+
+    //Group the same name due to different publisher
+    let newfilteredData = d3.nest()
+    .key(function(d) { return d.Name; })
+    .rollup(function(v) { return d3.sum(v, function(d) {return parseFloat(d.Global_Sales);})})
+    .entries(filteredData)
+ 
+    //console.log( newfilteredData )
+
+    process_data = cleanData(newfilteredData, function(a, b) {return parseFloat(b.value)-parseFloat(a.value)}, NUM_EXAMPLES);
+
+    console.log( process_data)
+
     // Update the x axis domain with the max sales of the provided data
-    x_bar.domain([0, d3.max(process_data, function(d) { return parseFloat(d.Global_Sales); })]);
+    x_bar.domain([0, d3.max(process_data, function(d) { return parseFloat(d.value); })]);
+
 
     //console.log( process_data)
     //console.log( d3.max(process_data, function(d) { return parseFloat(d.Global_Sales);}))
     // Update the y axis domains with the desired attribute
-    y_bar.domain(process_data.map(function(d) { return d.Name }));
-    color.domain(process_data.map(function(d) { return d.Name }));
+    y_bar.domain(process_data.map(function(d) { return d.key }));
+    
+    color.domain(process_data.map(function(d) { return d.key }));
 
     // Render y-axis label
     y_axis_label.call(d3.axisLeft(y_bar).tickSize(0).tickPadding(10)).attr("transform", `translate(40, 0)`);
@@ -124,10 +137,10 @@ let color = d3.scaleOrdinal()
         .merge(bars)
         .transition()
         .duration(1000)
-        .attr("fill", function(d) { return color(d.Name) })
+        .attr("fill", function(d) { return color(d.key) })
         .attr("x", x_bar(0))
-        .attr("y", function(d) { return y_bar(d.Name); })
-        .attr("width", function(d) { return x_bar(d.Global_Sales); })
+        .attr("y", function(d) { return y_bar(d.key); })
+        .attr("width", function(d) { return x_bar(d.value); })
         .attr("height",  y_bar.bandwidth())
 
 /*
@@ -141,10 +154,10 @@ let color = d3.scaleOrdinal()
             .merge(counts)
             .transition()
             .duration(1000)
-            .attr("x", function(d) { return x_bar(d.Global_Sales) + 45; })
-            .attr("y", function(d) { return y_bar(d.Name) + 12; })
+            .attr("x", function(d) { return x_bar(d.value) + 45; })
+            .attr("y", function(d) { return y_bar(d.key) + 12; })
             .style("text-anchor", "start")
-            .text(function(d) {return d.Global_Sales;});
+            .text(function(d) {return d.value.toFixed(2);});
         
         title.text(`Top 10 best seller video games in ${year}`)
         // Remove elements not in use if fewer groups in new dataset

@@ -32,9 +32,11 @@ genre_data = data.filter(function(a) {
 //calculate how many publisher for each
 let countdata = d3.nest()
   .key(function(d) { return d.Publisher; })
-  .rollup(function(w) { return w.length; })
+  .rollup(function(v) { return d3.sum(v, function(d) {return parseFloat(d.Global_Sales);})})
   .entries(genre_data)
-  .sort(function(a, b) {return parseInt(b.value)-parseInt(a.value)})
+  .sort(function(a, b) {return parseFloat(b.value)-parseFloat(a.value)});
+
+  console.log(countdata)
 
 let cutoff = 5;
 //store the data for percentage cal
